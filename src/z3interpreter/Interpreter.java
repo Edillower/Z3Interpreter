@@ -15,17 +15,17 @@ public class Interpreter {
 	private Solver solver;
 	
 	public Interpreter(){
-		cfg.put("model", "true");
-		ctx = new Context(cfg);
-		exe = new Executer(ctx);
-		solver = ctx.mkSolver();
+		this.cfg.put("model", "true");
+		this.ctx = new Context(this.cfg);
+		this.exe = new Executer(this.ctx);
+		this.solver = this.ctx.mkSolver();
 	}
 	
 	public void config(HashMap<String,String> newCfg){
-		cfg = newCfg;
-		ctx = new Context(cfg);
-		exe = new Executer(ctx);
-		solver = ctx.mkSolver();
+		this.cfg = newCfg;
+		this.ctx = new Context(this.cfg);
+		this.exe = new Executer(this.ctx);
+		this.solver = this.ctx.mkSolver();
 	}
 	
 	public List<Set<String>> add(String rules){
@@ -33,30 +33,30 @@ public class Interpreter {
 		Tokenizer tk = new Tokenizer(rules);
 		tk.skipToken();
 		ParseTree pt = Parser.parseCond(tk);
-		solver.add(exe.execCond(pt));
+		this.solver.add(this.exe.execCond(pt));
 		varCon.add(tk.getConstants());
 		varCon.add(tk.getVariables());
 		return varCon;
 	}
 	
 	public void pop(){
-		solver.pop();
+		this.solver.pop();
 	}
 	
 	public void pop(int i){
-		solver.pop(i);
+		this.solver.pop(i);
 	}
 	
 	public void push(){
-		solver.push();
+		this.solver.push();
 	}
 	
 	public String getSolver(){
-		return solver.toString();
+		return this.solver.toString();
 	}
 	
 	public String solve(){
-		return solver.check().toString();
+		return this.solver.check().toString();
 	}
 }
 
