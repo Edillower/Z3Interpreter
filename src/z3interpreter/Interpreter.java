@@ -13,22 +13,22 @@ public class Interpreter {
 	private Context ctx;
 	private Executer exe;
 	private Solver solver;
-	
-	public Interpreter(){
+
+	public Interpreter() {
 		this.cfg.put("model", "true");
 		this.ctx = new Context(this.cfg);
 		this.exe = new Executer(this.ctx);
 		this.solver = this.ctx.mkSolver();
 	}
-	
-	public void config(HashMap<String,String> newCfg){
+
+	public void config(HashMap<String, String> newCfg) {
 		this.cfg = newCfg;
 		this.ctx = new Context(this.cfg);
 		this.exe = new Executer(this.ctx);
 		this.solver = this.ctx.mkSolver();
 	}
-	
-	public List<Set<String>> add(String rules){
+
+	public List<Set<String>> add(String rules) {
 		List<Set<String>> varCon = new ArrayList<Set<String>>();
 		Tokenizer tk = new Tokenizer(rules);
 		tk.skipToken();
@@ -38,25 +38,44 @@ public class Interpreter {
 		varCon.add(tk.getVariables());
 		return varCon;
 	}
-	
-	public void pop(){
+
+	public void pop() {
 		this.solver.pop();
 	}
-	
-	public void pop(int i){
+
+	public void pop(int i) {
 		this.solver.pop(i);
 	}
-	
-	public void push(){
+
+	public void push() {
 		this.solver.push();
 	}
-	
-	public String getSolver(){
+
+	public String getSolver() {
 		return this.solver.toString();
 	}
-	
-	public String solve(){
+
+	public String solve() {
 		return this.solver.check().toString();
 	}
-}
 
+	public String checkValidity(String rules) {
+		this.solver.push();
+		Tokenizer tk = new Tokenizer(rules);
+		tk.skipToken();
+		ParseTree pt = Parser.parseCond(tk);
+		this.solver.add(this.exe.execCond(pt));
+		String r1 = this.solver.check().toString();
+		this.solver.pop();
+		this.solver.push();
+		this.solver.add(this.ctx.mkNot(this.exe.execCond(pt)));
+		String r2 = this.solver.check().toString();
+		this.solver.pop();
+		String validity = r1;
+		if (r1.equals("SATISFIABLE") && r2.equals("UNSATISFIABLE")) {
+			validity = "VALID";
+		}
+		return validity;
+	}
+
+}
