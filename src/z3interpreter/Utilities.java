@@ -16,7 +16,12 @@ class Utilities {
 		String msg = "[ERROR] " + e;
 		errors.add(msg);
 		System.out.println(msg);
-		System.exit(0);
+	    try {
+			throw new Exception("Error");
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 
 	static void showWarning(String e) {
