@@ -113,12 +113,7 @@ public class Interpreter {
 		return validity;
 	}
 
-	public void destroy() {
-		this.cfg = null;
+	public void closeContext(){
 		this.ctx.close();
-		this.ctx = null;
-		this.exe = null;
-		this.solver.reset();
-		this.solver = null;
 	}
 }
